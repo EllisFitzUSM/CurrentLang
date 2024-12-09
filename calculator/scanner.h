@@ -5,8 +5,6 @@
 #ifndef SCANNER_H
 #define SCANNER_H
 
-
-
 class Scanner {
     std::string source;
     std::vector<Token> tokens = {};
@@ -17,11 +15,20 @@ class Scanner {
     explicit Scanner(const std::string &source);
 
     std::vector<Token> ScanTokens();
-    Token scanToken();
-    void addToken(Token token);
+    void scanToken();
+    void addToken(TokenType type);
+
+    template <typename T>
+    void addToken(TokenType type, T literal);
+
+    char next();
     bool checkIfEnd();
+    bool match(char expected);
+    char peek();
+    char peekNext() const;
+
+    // Literal Functions
+    void number();
 };
-
-
 
 #endif //SCANNER_H
