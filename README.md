@@ -29,3 +29,42 @@ There are two (2) arguments to provide. They can be provided in command line arg
 | `-C`    | `flag` | Concurrent run of calculated expression. |
 | `-P`    | `flag` | Parallel run of calculated expression. |
 | `Expression`    | `string` | The expression to calculate (includes tokens like [0-9] and [+-*/%]) |
+
+## Roadmap
+
+This roadmap is not final and just an ideal path to the envisioned final product.
+Time frame is 1-2 years, with the latter half expected to take the most.
+
+- Concurrent/Parallel/Sequential Tree-Walk Calculator ✅
+
+### V 0.1
+- Basic Syntax
+- Classes
+- Limited Standard Library
+- Interpreted
+### V 0.2
+- Concurrency
+- Abstract Classes, Interfaces, and Inheritance
+- Basic Parallelism
+- LLVM Integration
+### V 0.3
+- Parametric/Generics
+- Bitwise Operators and Operator Overriding
+- Force All Statements to Expression
+### V 0.4
+- Advanced Memory Management/Safety Syntax
+- Syntax Highlighter/Checker Environment
+### V0.5
+- IO/System
+- Platform Interaction
+- Experimental Syntax Exploration ie Extension Functions
+### V 0.6
+- Exchange LLVM Codegen for Manual Parallel Compilation Optimizations
+- Explore JIT and VM
+### V 1:
+- Finalized Syntax Decisions
+- Graphics Library
+## License
+
+[MIT](https://choosealicense.com/licenses/mit/)
+
