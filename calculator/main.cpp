@@ -2,6 +2,10 @@
 #include <chrono>
 #include <string>
 
+#include "expression.h"
+#include "parser.h"
+#include "scanner.h"
+
 int sequential(const std::string &arg) {
     std::cout << "sequential";
     return 0;
@@ -51,6 +55,11 @@ int main(int argc, char *argv[]) {
         std::cout << "Expression: Infix using +-/*() tokens.\nInput:";
         getline(std::cin, expression);
     }
+
+    std::vector<Token> tokens = Scanner(expression).scanTokens();
+    Parser parser = Parser(tokens);
+    std::unique_ptr<Expression> expressionObj = parser.parse();
+
 
     method(expression);
     return 0;

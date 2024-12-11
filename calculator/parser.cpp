@@ -2,9 +2,20 @@
 // Created by PC on 12/11/2024.
 //
 
+#include "expression.h"
 #include "parser.h"
+#include <stdexcept>
 
 Parser::Parser(std::vector<Token> &tokens) : tokens(tokens) {}
+
+std::unique_ptr<Expression> Parser::parse() {
+    try {
+        return std::move(term());
+    }
+    catch (const std::exception& e) {
+        return 0;
+    }
+}
 
 bool Parser::checkIfEnd() const {
     return current >= tokens.size();
@@ -27,57 +38,69 @@ bool Parser::check(const TokenType type) const {
     return peekCurrent().type == type;
 }
 
-// TODO: All these Token returns need to be references/pointers.
-Token Parser::peekCurrent() const {
+Token& Parser::peekCurrent() const {
     return tokens.at(current);
 }
 
-Token Parser::next() {
+Token& Parser::next() {
     if (!checkIfEnd()) {
         current++;
     }
     return previous();
 }
 
-Token Parser::previous() const {
+Token& Parser::previous() {
     return tokens.at(current - 1);
 }
 
-Expression Parser::term() {
-    Expression expr = factor();
+std::unique_ptr<Expression> Parser::term() {
+    std::unique_ptr<Expression> expr = factor();
 
     while (match({DASH, PLUS})) {
-        Token op = previous();
-        Expression right = factor();
-        expr = BinaryOperation(expr, op, right);
+        Token& op = previous();
+        std::unique_ptr<Expression> right = factor();
+        expr = std::make_unique<BinaryOperation>(std::move(expr), op, std::move(right));
     }
     return expr;
 }
 
-Expression Parser::factor() {
-    Expression expr = unary();
+std::unique_ptr<Expression> Parser::factor() {
+    std::unique_ptr<Expression> expr = unary();
 
     while (match({FORWARD_SLASH, STAR, MODULO})) {
-        Token op = previous();
-        Expression right = unary();
-        expr = BinaryOperation(expr, op, right);
+        Token& op = previous();
+        std::unique_ptr<Expression> right = unary();
+        expr = std::make_unique<BinaryOperation>(std::move(expr), op, std::move(right));
     }
     return expr;
 }
 
-Expression Parser::unary() {
+std::unique_ptr<Expression> Parser::unary() {
     if (match({DASH})) {
-        Token op = previous();
-        Expression right = unary();
-        return UnaryOperation(op, right);
+        Token& op = previous();
+        std::unique_ptr<Expression> right = unary();
+        return std::make_unique<UnaryOperation>(op, std::move(right));
     }
     return primary();
 }
 
-Expression Parser::primary() {
+std::unique_ptr<Expression> Parser::primary() {
     if (match({NUMBER})) {
-        return new Literal(previous().literal);
+        return std::make_unique<Literal>(previous().literal);
     }
+    if (match({LEFT_PAREN})) {
+        std::unique_ptr<Expression> expr = term();
+        // consume()
+        return std::make_unique<Grouping>(std::move(expr));
+    }
+    exit(1);
+}
+
+Token& Parser::consume(TokenType type, const std::string& message) {
+    if (check({type})) {
+        return next();
+    }
+    throw std::runtime_error(message);
 }
 
 

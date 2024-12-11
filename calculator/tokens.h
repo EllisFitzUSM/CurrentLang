@@ -5,8 +5,6 @@
 #ifndef TOKENS_H
 #define TOKENS_H
 
-#endif //TOKENS_H
-
 enum TokenType {
     // Scope
     LEFT_PAREN, RIGHT_PAREN,
@@ -45,14 +43,15 @@ inline std::map<TokenType, char> tokenLexemeMap = {
 };
 */
 
-using LiteralType = std::variant<int, double>;
-
+using LiteralVar = std::variant<int, double>;
 class Token {
 public:
     const TokenType type;
     const std::string lexeme;
     const int line;
     const int column;
-    const LiteralType literal;
-    Token(const TokenType &type, std::string lexeme, const int &line, const int &column, const LiteralType &literal);
+    const LiteralVar literal;
+    Token(const TokenType &type, std::string lexeme, const int &line, const int &column, const LiteralVar &literal);
 };
+
+#endif //TOKENS_H

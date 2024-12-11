@@ -18,7 +18,7 @@ public:
     std::vector<Token> scanTokens();
     void scanToken();
     void addToken(TokenType type);
-    void addToken(TokenType type, LiteralType literal);
+    void addToken(TokenType type, LiteralVar literal);
     char next();
     bool checkIfEnd() const;
     bool match(char expected);

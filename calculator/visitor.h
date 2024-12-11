@@ -11,4 +11,8 @@ public:
     virtual T visitLiteral() = 0;
 };
 
+template <typename T>
+class Evaluator : Visitor<T> {
+};
+
 #endif //VISITOR_H

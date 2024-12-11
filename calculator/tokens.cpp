@@ -4,7 +4,7 @@
 #include <utility>
 #include "tokens.h"
 
-Token::Token(const TokenType &type, std::string lexeme, const int &line, const int &column, const LiteralType &literal)
+Token::Token(const TokenType &type, std::string lexeme, const int &line, const int &column, const LiteralVar &literal)
     : type(type), lexeme(std::move(lexeme)), line(line), column(column), literal(literal) {}
 
 std::ostream& operator<<(std::ostream &os, const TokenType &t) {

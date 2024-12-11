@@ -1,3 +1,4 @@
+#include <memory>
 #include "tokens.h"
 #include "visitor.h"
 
@@ -18,20 +19,20 @@ class Expression {
  * Multiply (*)
  */
 class BinaryOperation : public Expression {
-    const Expression& leftOp;
+    const std::unique_ptr<Expression> leftOp;
     const Token& binOp;
-    const Expression& rightOp;
+    const std::unique_ptr<Expression> rightOp;
 public:
-    BinaryOperation(Expression& leftOp, Token& binOp, Expression& rightOp);
+    BinaryOperation(std::unique_ptr<Expression> leftOp, Token& binOp, std::unique_ptr<Expression> rightOp);
     template <typename T>
     T accept(Visitor<T> &visitor);
 };
 
 // ( Expression )
 class Grouping : public Expression {
-    const Expression& innerExpression;
+    const std::unique_ptr<Expression> innerExpression;
 public:
-    explicit Grouping(Expression& innerExpression);
+    explicit Grouping(std::unique_ptr<Expression> innerExpression);
     template<class T>
     T accept(Visitor<T> &visitor);
 };
@@ -39,18 +40,18 @@ public:
 // -Expression
 class UnaryOperation : public Expression {
     const Token& unaryOp;
-    const Expression& operand;
+    const std::unique_ptr<Expression> operand;
 public:
-    UnaryOperation(Token& unaryOp, Expression& operand);
+    UnaryOperation(Token& unaryOp, std::unique_ptr<Expression> operand);
     template<class T>
     T accept(Visitor<T> &visitor);
 };
 
 // Numbers
 class Literal : public Expression {
-    const LiteralType& literal;
+    const LiteralVar& literal;
 public:
-    explicit Literal(LiteralType& literal);
+    explicit Literal(const LiteralVar& literal);
     template<class T>
     T accept(Visitor<T> &visitor);
 };

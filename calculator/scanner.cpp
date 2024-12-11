@@ -88,7 +88,7 @@ void Scanner::addToken(const TokenType type) {
     addToken(type, 0);
 }
 
-void Scanner::addToken(const TokenType type, const LiteralType literal) {
+void Scanner::addToken(const TokenType type, const LiteralVar literal) {
     std::string text = source.substr(start, current);
     tokens.emplace_back(type, text, line, current, literal);
 }
