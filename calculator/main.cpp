@@ -57,7 +57,7 @@ int main(int argc, char *argv[]) {
     }
 
     std::vector<Token> tokens = Scanner(expression).scanTokens();
-    Parser parser = Parser(tokens);
+    auto parser = Parser(tokens);
     std::unique_ptr<Expression> expressionObj = parser.parse();
 
 
