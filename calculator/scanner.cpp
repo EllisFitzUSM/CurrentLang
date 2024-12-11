@@ -1,16 +1,14 @@
 #include "scanner.h"
-
 #include <format>
 #include <string>
 #include <iostream>
 #include "util.cpp"
-using namespace std;
 
 Scanner::Scanner(const std::string &source) {
     this->source = source;
 }
 
-vector<Token> Scanner::ScanTokens() {
+std::vector<Token> Scanner::scanTokens() {
     while (!checkIfEnd()) {
         start = current;
         scanToken();
@@ -18,17 +16,8 @@ vector<Token> Scanner::ScanTokens() {
     return tokens;
 }
 
-bool Scanner::checkIfEnd() {
-    return current >= source.length();
-}
-
 void Scanner::scanToken() {
-    char c = '';
-    switch (c) {
-        case '{':
-            addToken(LEFT_BRACE);
-        case '}':
-            addToken(RIGHT_BRACE);
+    switch (char c = next()) {
         case '(':
             addToken(LEFT_PAREN);
         case ')':
@@ -57,12 +46,16 @@ void Scanner::scanToken() {
             line++;
         default:
             if (isdigit(c)) {
-                addToken(NUMBER);
+                number();
             }
             else {
-                error(line, current, "scanToken()", format("Unexpected character {}", c));
+                parse_err(line, current, "scanToken()", std::format("Unexpected character {}", c));
             }
     }
+}
+
+bool Scanner::checkIfEnd() const {
+    return current >= source.length();
 }
 
 char Scanner::next() {
@@ -72,30 +65,7 @@ char Scanner::next() {
     return '\0'; // I believe this should be unreachable
 }
 
-// Optimization could be made here since this function is only using forward slash ATM.
-bool Scanner::match(char expected) {
-    if (checkIfEnd()) return false;
-    if (source.at(current) != expected) return false;
-    // ^ This is technically peek
-    current++;
-    return true;
-}
-
-void Scanner::addToken(TokenType type) {
-    // Token token = Token(type, tokenLexemeMap[type], line, current);
-    string text = source.substr(start, current);
-    Token token = Token(type, text, line, current);
-    tokens.push_back(token);
-}
-
-template <typename T>
-void Scanner::addToken(TokenType type, T literal) {
-    string text = source.substr(start, current);
-    Token token = Token(type, text, line, current);
-    tokens.push_back(token);
-}
-
-char Scanner::peek() {
+char Scanner::peek() const {
     if (checkIfEnd()) return '\0';
     return source.at(current);
 }
@@ -103,6 +73,24 @@ char Scanner::peek() {
 char Scanner::peekNext() const {
     if (current + 1 >= source.length()) return '\0';
     return source.at(current + 1);
+}
+
+// Optimization could be made here since this function is only using forward slash ATM.
+bool Scanner::match(const char expected) {
+    if (checkIfEnd()) return false;
+    if (source.at(current) != expected) return false;
+    // ^ This is technically peek
+    current++;
+    return true;
+}
+
+void Scanner::addToken(const TokenType type) {
+    addToken(type, 0);
+}
+
+void Scanner::addToken(const TokenType type, const LiteralType literal) {
+    std::string text = source.substr(start, current);
+    tokens.emplace_back(type, text, line, current, literal);
 }
 
 void Scanner::number() {
@@ -117,7 +105,5 @@ void Scanner::number() {
             next();
         }
     }
-
-    addToken(NUMBER, )
-
+    addToken(NUMBER, std::stod(source.substr(start, current)));
 }

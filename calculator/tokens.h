@@ -1,5 +1,6 @@
 #include <map>
 #include <string>
+#include <variant>
 
 #ifndef TOKENS_H
 #define TOKENS_H
@@ -8,7 +9,6 @@
 
 enum TokenType {
     // Scope
-    LEFT_BRACE, RIGHT_BRACE,
     LEFT_PAREN, RIGHT_PAREN,
 
     // Binary Operators
@@ -16,11 +16,11 @@ enum TokenType {
 
     // Literals
     NUMBER,
+
+    EOF_T
 };
 
 inline std::map<TokenType, std::string> tokenStringMap = {
-    { LEFT_BRACE, "LEFT_BRACE" },
-    { RIGHT_BRACE, "RIGHT_BRACE" },
     { LEFT_PAREN, "LEFT_PAREN" },
     { RIGHT_PAREN, "RIGHT_PAREN" },
     { FORWARD_SLASH, "FORWARD_SLASH" },
@@ -28,12 +28,12 @@ inline std::map<TokenType, std::string> tokenStringMap = {
     { DASH, "DASH" },
     { STAR, "STAR" },
     { MODULO, "MODULO" },
-    { NUMBER, "NUMBER" }
+    { NUMBER, "NUMBER" },
+    {EOF_T, "\0"}
 };
 
+/* Not sure if this is quite needed yet (or at all)
 inline std::map<TokenType, char> tokenLexemeMap = {
-    { LEFT_BRACE, '{' },
-    { RIGHT_BRACE, '}' },
     { LEFT_PAREN, '(' },
     { RIGHT_PAREN, ')' },
     { FORWARD_SLASH, '/' },
@@ -41,16 +41,18 @@ inline std::map<TokenType, char> tokenLexemeMap = {
     { DASH, '-' },
     { STAR, '*' },
     { MODULO, '%' },
-    { NUMBER, '' }
+    { NUMBER, '\0' }
 };
+*/
 
-template <typename T>
+using LiteralType = std::variant<int, double>;
+
 class Token {
 public:
     const TokenType type;
     const std::string lexeme;
     const int line;
     const int column;
-    const T literal;
-    Token(const TokenType &type, const std::string &lexeme, const int &line, const int &column);
+    const LiteralType literal;
+    Token(const TokenType &type, std::string lexeme, const int &line, const int &column, const LiteralType &literal);
 };

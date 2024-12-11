@@ -1,22 +1,16 @@
 #include <string>
 #include <iostream>
 #include <map>
+#include <utility>
 #include "tokens.h"
 
-/**
- * @param type
- * @param lexeme
- * @param line
- * @param column
- */
-Token::Token(const TokenType &type, const std::string &lexeme, const int &line, const int &column)
-    : type(type), lexeme(lexeme), line(line), column(column) {}
+Token::Token(const TokenType &type, std::string lexeme, const int &line, const int &column, const LiteralType &literal)
+    : type(type), lexeme(std::move(lexeme)), line(line), column(column), literal(literal) {}
 
 std::ostream& operator<<(std::ostream &os, const TokenType &t) {
     return (os << tokenStringMap[t]);
 }
 
 std::ostream& operator<<(std::ostream &os, const Token &t) {
-    return (os << "Type: " << t.type <<  "\nLexeme: " << t.lexeme
-        << "\nLine: " << t.line << "\nColumn: " << t.column);
+    return os << "Type: " << t.type <<  "\nLexeme: " << t.lexeme << "\nLine: " << t.line << "\nColumn: " << t.column;
 }
