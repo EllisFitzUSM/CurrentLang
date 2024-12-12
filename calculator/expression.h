@@ -1,9 +1,12 @@
 #include <memory>
 #include "tokens.h"
-#include "visitor.h"
 
 #ifndef EXPRESSION_H
 #define EXPRESSION_H
+
+// This fix here is called forward declaration
+template <typename T>
+class Visitor;
 
 class Expression {
     template <typename T>
@@ -19,10 +22,10 @@ class Expression {
  * Multiply (*)
  */
 class BinaryOperation : public Expression {
+public:
     const std::unique_ptr<Expression> leftOp;
     const Token& binOp;
     const std::unique_ptr<Expression> rightOp;
-public:
     BinaryOperation(std::unique_ptr<Expression> leftOp, Token& binOp, std::unique_ptr<Expression> rightOp);
     template <typename T>
     T accept(Visitor<T> &visitor);
@@ -30,8 +33,8 @@ public:
 
 // ( Expression )
 class Grouping : public Expression {
-    const std::unique_ptr<Expression> innerExpression;
 public:
+    const std::unique_ptr<Expression> innerExpression;
     explicit Grouping(std::unique_ptr<Expression> innerExpression);
     template<class T>
     T accept(Visitor<T> &visitor);
@@ -39,9 +42,9 @@ public:
 
 // -Expression
 class UnaryOperation : public Expression {
+public:
     const Token& unaryOp;
     const std::unique_ptr<Expression> operand;
-public:
     UnaryOperation(Token& unaryOp, std::unique_ptr<Expression> operand);
     template<class T>
     T accept(Visitor<T> &visitor);
@@ -49,8 +52,8 @@ public:
 
 // Numbers
 class Literal : public Expression {
-    const LiteralVar& literal;
 public:
+    const LiteralVar& literal;
     explicit Literal(const LiteralVar& literal);
     template<class T>
     T accept(Visitor<T> &visitor);

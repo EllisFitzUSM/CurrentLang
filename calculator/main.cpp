@@ -6,6 +6,19 @@
 #include "parser.h"
 #include "scanner.h"
 
+
+/* TODO: Make abstract class/interface iterator for scanner and parser
+ *  - Model after standard iterators...
+ *  - Rename scanner to tokenizer
+ *  - 'match()' function contains list argument instead of singular
+ *      - Could this be containsNext? nextContains?
+ *  - hasNext
+ *  - peek()
+ *  - peekNext()
+ *  - Reduce verbosity in scanner to less function (addToken and scanToken can be same)
+ *  - Consolidate files to less.
+ */
+
 int sequential(const std::string &arg) {
     std::cout << "sequential";
     return 0;
